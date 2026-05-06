@@ -7,7 +7,6 @@ import {formatSitesFixesConfig} from './utils/format';
 import {parseSitesFixesConfig, getSitesFixesFor, getDomain} from './utils/parse';
 import type {SiteFixesIndex} from './utils/parse';
 
-declare const __CHROMIUM_MV2__: boolean;
 declare const __CHROMIUM_MV3__: boolean;
 
 const dynamicThemeFixesCommands: { [key: string]: keyof DynamicThemeFix } = {
@@ -68,7 +67,7 @@ export function getDynamicThemeFixesFor(url: string, text: string, index: SiteFi
             ...fixes.slice(1),
         ];
 
-        const inversionFix = __CHROMIUM_MV2__ || __CHROMIUM_MV3__ ?
+        const inversionFix = __CHROMIUM_MV3__ ?
             '\nembed[type="application/pdf"][src="about:blank"] { filter: invert(100%) contrast(90%); }' :
             '\nembed[type="application/pdf"] { filter: invert(100%) contrast(90%); }';
         if (!commonFix.css.endsWith(inversionFix)) {

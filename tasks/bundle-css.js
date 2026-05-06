@@ -95,7 +95,7 @@ export function createBundleCSSTask(cssEntries) {
                 if (!platforms[platform]) {
                     continue;
                 }
-                const css = await bundleCSSEntry(entry, platform === PLATFORM.CHROMIUM_MV2_PLUS);
+                const css = await bundleCSSEntry(entry, false);
                 await writeFiles(entry.dest, {[platform]: true}, debug, css);
             }
         }

@@ -44,3 +44,8 @@ deno.json
 # System files
 #-----------------------------------
 .DS_Store
+
+# AI tool configs
+#-----------------------------------
+.gemini/
+.copilot/

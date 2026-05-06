@@ -1,13 +1,10 @@
 import {canInjectScript, keepListeningToEvents} from '../background/utils/extension-api';
-import type {ColorScheme, DebugMessageBGtoCS, DebugMessageBGtoUI, DebugMessageCStoBG, ExtensionData, News, UserSettings} from '../definitions';
-import {getHelpURL, UNINSTALL_URL} from '../utils/links';
-import {emulateColorScheme, isSystemDarkModeEnabled} from '../utils/media-query';
+import type {ColorScheme, DebugMessageBGtoCS, DebugMessageBGtoUI, DebugMessageCStoBG, ExtensionData, UserSettings} from '../definitions';
+import {emulateColorScheme} from '../utils/media-query';
 import {DebugMessageTypeBGtoCS, DebugMessageTypeBGtoUI, DebugMessageTypeCStoBG} from '../utils/message';
 import {isFirefox} from '../utils/platform';
 
 import {Extension} from './extension';
-import {makeChromiumHappy} from './make-chromium-happy';
-import {setNewsForTesting} from './newsmaker';
 import {ASSERT} from './utils/log';
 import {sendLog} from './utils/sendLog';
 
@@ -42,10 +39,6 @@ type TestMessage = {
 } | {
     type: 'firefox-emulateColorScheme';
     data: ColorScheme;
-    id: number;
-} | {
-    type: 'setNews';
-    data: News[];
     id: number;
 };
 
@@ -104,14 +97,10 @@ if (__WATCH__) {
                     chrome.tabs.query({}, (tabs) => {
                         const message: DebugMessageBGtoCS = {type: DebugMessageTypeBGtoCS.RELOAD};
                         // Some contexts are not considered to be tabs and can not receive regular messages
-                        chrome.runtime.sendMessage<DebugMessageBGtoCS>(message);
+                        chrome.runtime.sendMessage<DebugMessageBGtoCS>(message).catch(() => { /* noop */ });
                         for (const tab of tabs) {
                             if (canInjectScript(tab.url)) {
-                                if (__CHROMIUM_MV3__) {
-                                    chrome.tabs.sendMessage<DebugMessageBGtoCS>(tab.id!, message).catch(() => { /* noop */ });
-                                    continue;
-                                }
-                                chrome.tabs.sendMessage<DebugMessageBGtoCS>(tab.id!, message);
+                                chrome.tabs.sendMessage<DebugMessageBGtoCS>(tab.id!, message).catch(() => { /* noop */ });
                             }
                         }
                         chrome.runtime.reload();
@@ -126,14 +115,6 @@ if (__WATCH__) {
     };
 
     listen();
-} else if (!__DEBUG__ && !__TEST__) {
-    chrome.runtime.onInstalled.addListener(({reason}) => {
-        if (reason === 'install') {
-            chrome.tabs.create({url: getHelpURL()});
-        }
-    });
-
-    chrome.runtime.setUninstallURL(UNINSTALL_URL);
 }
 
 if (__TEST__) {
@@ -186,15 +167,6 @@ if (__TEST__) {
                     chrome.storage[region].get(keys as any, respond);
                     break;
                 }
-                case 'setNews':
-                    setNewsForTesting(message.data);
-                    respond();
-                    break;
-                case 'firefox-getColorScheme': {
-                    ASSERT('Firefox-specific function', isFirefox);
-                    respond(isSystemDarkModeEnabled() ? 'dark' : 'light');
-                    break;
-                }
                 case 'firefox-emulateColorScheme': {
                     ASSERT('Firefox-specific function', isFirefox);
                     emulateColorScheme(message.data);
@@ -236,8 +208,6 @@ if (__DEBUG__ && __LOG__) {
         }
     });
 }
-
-makeChromiumHappy();
 
 function writeInstallationVersion(
     storage: chrome.storage.SyncStorageArea | chrome.storage.LocalStorageArea,

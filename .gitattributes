@@ -5,3 +5,4 @@ src/config/*.json text eol=crlf
 
 *.png binary
 *.ttf binary
+*.zip binary

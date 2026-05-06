@@ -24,7 +24,7 @@ function html(platform, title, hasLoader, hasStyleSheet, compatibility) {
             '        />',
         ] : null,
         '        <script src="index.js" defer></script>',
-        (compatibility && platform === PLATFORM.CHROMIUM_MV2) ? '        <script src="compatibility.js" defer></script>' : null,
+        null,
         '    </head>',
         '',
         hasLoader ? [
@@ -50,7 +50,7 @@ const htmlEntries = [
         hasStyleSheet: false,
         hasCompatibilityCheck: false,
         reloadType: reload.FULL,
-        platforms: [PLATFORM.CHROMIUM_MV2, PLATFORM.CHROMIUM_MV2_PLUS, PLATFORM.FIREFOX_MV2, PLATFORM.THUNDERBIRD],
+        platforms: [],
     },
     {
         title: 'Dark Reader settings',

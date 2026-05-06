@@ -6,14 +6,13 @@
 
 .loader {
     background-color: @color-back;
-    height: @popup-content-height + 2 * @popup-content-padding;
-    left: 50%;
+    bottom: 0;
+    left: 0;
     pointer-events: none;
     position: fixed;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    right: 0;
+    top: 0;
     transition: background-color @loading-fade-duration ease-out;
-    width: @popup-content-width + 2 * @popup-content-padding;
     z-index: 999;
 
     &--complete {
@@ -48,7 +47,7 @@
         opacity: 0;
         position: absolute;
         right: @popup-content-padding;
-        bottom: @popup-content-height + @popup-content-padding - @size-control-inner - @indent-small;
+        bottom: @popup-content-padding;
     }
 
     &__error {

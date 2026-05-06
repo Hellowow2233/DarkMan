@@ -1,6 +1,5 @@
 {
     "manifest_version": 3,
-    "minimum_chrome_version": "106.0.0.0",
     "action": {
         "default_title": "Dark Reader",
         "default_icon": {
@@ -13,7 +12,7 @@
         "page": "ui/popup/index.html"
     },
     "background": {
-        "service_worker": "background/index.js"
+        "scripts": ["background/index.js"]
     },
     "content_security_policy": {
         "extension_pages": "default-src 'none'; script-src 'self'; style-src 'self'; img-src * data:; connect-src *; media-src 'none'; child-src 'none'; worker-src 'none'; object-src 'none'"
@@ -28,8 +27,7 @@
             ],
             "run_at": "document_start",
             "all_frames": true,
-            "match_about_blank": true,
-            "world": "MAIN"
+            "match_about_blank": true
         },
         {
             "matches": [
@@ -40,8 +38,7 @@
             ],
             "run_at": "document_start",
             "all_frames": true,
-            "match_about_blank": true,
-            "world": "ISOLATED"
+            "match_about_blank": true
         },
         {
             "matches": [
@@ -52,17 +49,20 @@
             ],
             "run_at": "document_idle",
             "all_frames": false,
-            "match_about_blank": false,
-            "world": "ISOLATED"
+            "match_about_blank": false
         }
     ],
     "permissions": [
         "alarms",
-        "fontSettings",
-        "scripting",
         "storage"
     ],
     "host_permissions": [
         "*://*/*"
-    ]
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "addon@darkreader.org",
+            "strict_min_version": "109.0"
+        }
+    }
 }
