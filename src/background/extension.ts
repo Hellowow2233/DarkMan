@@ -21,7 +21,6 @@ import DevTools from './devtools';
 import IconManager from './icon-manager';
 import type {ExtensionAdapter} from './messenger';
 import Messenger from './messenger';
-import Newsmaker from './newsmaker';
 import TabManager from './tab-manager';
 import UIHighlights from './ui-highlights';
 import UserStorage from './user-storage';
@@ -42,10 +41,8 @@ interface SystemColorState extends Record<string, unknown> {
     wasLastColorSchemeDark: boolean | null;
 }
 
-declare const __CHROMIUM_MV2__: boolean;
 declare const __CHROMIUM_MV3__: boolean;
 declare const __PLUS__: boolean;
-declare const __THUNDERBIRD__: boolean;
 
 export class Extension {
     private static autoState: AutomationState = '';
@@ -255,13 +252,10 @@ export class Extension {
         Extension.onAppToggle();
         logInfo('loaded', UserStorage.settings);
 
-        if (__THUNDERBIRD__) {
-            TabManager.registerMailDisplayScript();
-        } else if (!__CHROMIUM_MV3__ || Extension.isFirstLoad) {
+        if (Extension.isFirstLoad) {
             TabManager.updateContentScript({runOnProtectedPages: UserStorage.settings.enableForProtectedPages});
         }
 
-        UserStorage.settings.fetchNews && Newsmaker.subscribe();
         Extension.startBarrier!.resolve();
     }
 
@@ -276,8 +270,6 @@ export class Extension {
             changeSettings: Extension.changeSettings,
             setTheme: Extension.setTheme,
             toggleActiveTab: Extension.toggleActiveTab,
-            markNewsAsRead: Newsmaker.markAsRead,
-            markNewsAsDisplayed: Newsmaker.markAsDisplayed,
             loadConfig: ConfigManager.load,
             applyDevFixes: DevTools.applyFixes,
             resetDevFixes: DevTools.resetFixes,
@@ -320,17 +312,12 @@ export class Extension {
                             target: {tabId, frameIds: [frameId]},
                             func: detectPDF,
                         }))[0].result || false;
-                    } else if (__CHROMIUM_MV2__) {
-                        return new Promise<boolean>((resolve) => chrome.tabs.executeScript(tabId, {
-                            frameId,
-                            code: `(${detectPDF.toString()})()`,
-                        }, (results) => resolve(results?.[0])));
                     }
                     return false;
                 }
 
                 const pdf = async () => isPDF(frameURL || await TabManager.getActiveTabURL());
-                if (((__CHROMIUM_MV2__ || __CHROMIUM_MV3__) && await scriptPDF(tabId!, frameId!)) || await pdf()) {
+                if ((__CHROMIUM_MV3__ && await scriptPDF(tabId!, frameId!)) || await pdf()) {
                     Extension.changeSettings({enableForPDF: !UserStorage.settings.enableForPDF});
                 } else {
                     Extension.toggleActiveTab();
@@ -396,13 +383,11 @@ export class Extension {
     static async collectData(): Promise<ExtensionData> {
         await Extension.loadData();
         const [
-            news,
             shortcuts,
             activeTab,
             isAllowedFileSchemeAccess,
             uiHighlights,
         ] = await Promise.all([
-            Newsmaker.getLatest(),
             Extension.getShortcuts(),
             Extension.getActiveTabInfo(),
             new Promise<boolean>((r) => chrome.extension.isAllowedFileSchemeAccess(r)),
@@ -413,7 +398,6 @@ export class Extension {
             isReady: true,
             isAllowedFileSchemeAccess,
             settings: UserStorage.settings,
-            news,
             shortcuts,
             colorScheme: ConfigManager.COLOR_SCHEMES_RAW!,
             forcedScheme: Extension.autoState === 'scheme-dark' ? 'dark' : Extension.autoState === 'scheme-light' ? 'light' : null,
@@ -539,9 +523,6 @@ export class Extension {
             } else {
                 resetWindowTheme();
             }
-        }
-        if (prev.fetchNews !== UserStorage.settings.fetchNews) {
-            UserStorage.settings.fetchNews ? Newsmaker.subscribe() : Newsmaker.unSubscribe();
         }
 
         if (prev.enableContextMenus !== UserStorage.settings.enableContextMenus) {

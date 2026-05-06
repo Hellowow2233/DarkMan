@@ -1,20 +1,9 @@
-import {HOMEPAGE_URL, BLOG_URL, DEVTOOLS_DOCS_URL, GITHUB_URL, PRIVACY_URL, TWITTER_URL, UNINSTALL_URL, HELP_URL} from './links';
-
 enum CSP {
     NONE = "'none'",
     SELF = "'self'"
 }
 
-function check() {
-    const prefixed = [BLOG_URL, PRIVACY_URL, UNINSTALL_URL, HELP_URL];
-    if (prefixed.some((url) => !url.startsWith(HOMEPAGE_URL))) {
-        throw new Error('Some navigation URL is not within main site!');
-    }
-}
-
 export function prepareCSPMV3(): chrome.runtime.ManifestV3['content_security_policy'] {
-    check();
-
     const result: any = {};
     const policy: any = {
         extension_pages: {
@@ -26,13 +15,6 @@ export function prepareCSPMV3(): chrome.runtime.ManifestV3['content_security_pol
                 'data:',
             ],
             'connect-src': ['*'],
-            'navigate-to': [
-                CSP.SELF,
-                `${HOMEPAGE_URL}/*`,
-                DEVTOOLS_DOCS_URL,
-                GITHUB_URL,
-                TWITTER_URL,
-            ],
             'media-src': [CSP.NONE],
             'child-src': [CSP.NONE],
             'worker-src': [CSP.NONE],

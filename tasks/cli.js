@@ -43,10 +43,8 @@ function printHelp() {
         '',
         'To narrow down the list of build targets (for efficiency):',
         '  --api          Library build (published to NPM)',
-        '  --chrome       MV2 for Chromium-based browsers (published to Chrome Web Store)',
-        '  --chrome-mv3   MV3 for Chromium-based browsers (will replace MV2 version eventually)',
-        '  --firefox      MV2 for Firefox (published to Mozilla Add-on store)',
-        '  --thunderbird  Thunderbird',
+        '  --chrome-mv3   MV3 for Chromium-based browsers',
+        '  --firefox-mv3  MV3 for Firefox',
         '',
         'To specify type of build:',
         '  --release      Release bundle for signing prior to publication',
@@ -127,12 +125,12 @@ async function checkoutHead() {
 function validateArguments(args) {
     const validationErrors = [];
 
-    const validFlags = ['--api', '--chrome', '--chrome-mv2', '--chrome-mv3', '--firefox', '--firefox-mv2', '--thunderbird', '--release', '--debug', '--watch', '--plus', '--log-info', '--log-warn', '--test'];
+    const validFlags = ['--api', '--chrome-mv3', '--firefox-mv3', '--release', '--debug', '--watch', '--plus', '--log-info', '--log-warn', '--test'];
     const invalidFlags = args.filter((flag) => !validFlags.includes(flag) && !flag.startsWith('--version='));
     invalidFlags.forEach((flag) => validationErrors.push(`Invalid flag ${flag}`));
 
     if (args.some((arg) => arg.startsWith('--version='))) {
-        if (!args.includes('--firefox') || !args.includes('--release') || args.length !== 3) {
+        if (!args.includes('--firefox-mv3') || !args.includes('--release') || args.length !== 3) {
             validationErrors.push('Only Firefox build currently supports signed builds');
         }
     }
@@ -195,7 +193,7 @@ async function run() {
         await runTasks([signature, zip], {
             version,
             platforms: {
-                [PLATFORM.FIREFOX_MV2]: true,
+                [PLATFORM.FIREFOX_MV3]: true,
             },
             debug: false,
             watch: false,

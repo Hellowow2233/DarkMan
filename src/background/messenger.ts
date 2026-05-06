@@ -13,8 +13,6 @@ export interface ExtensionAdapter {
     collectDevToolsData: () => Promise<DevToolsData>;
     changeSettings: (settings: Partial<UserSettings>) => void;
     setTheme: (theme: Partial<Theme>) => void;
-    markNewsAsRead: (ids: string[]) => Promise<void>;
-    markNewsAsDisplayed: (ids: string[]) => Promise<void>;
     toggleActiveTab: () => void;
     loadConfig: (options: {local: boolean}) => Promise<void>;
     applyDevFixes: (type: DevFixType, text: string) => Error | null;
@@ -123,12 +121,6 @@ export default class Messenger {
                 break;
             case MessageTypeUItoBG.TOGGLE_ACTIVE_TAB:
                 Messenger.adapter.toggleActiveTab();
-                break;
-            case MessageTypeUItoBG.MARK_NEWS_AS_READ:
-                Messenger.adapter.markNewsAsRead(data);
-                break;
-            case MessageTypeUItoBG.MARK_NEWS_AS_DISPLAYED:
-                Messenger.adapter.markNewsAsDisplayed(data);
                 break;
             case MessageTypeUItoBG.LOAD_CONFIG:
                 Messenger.adapter.loadConfig(data);

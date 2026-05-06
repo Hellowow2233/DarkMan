@@ -22,16 +22,6 @@ const copyEntries = [
         path: 'ui/assets',
         reloadType: reload.UI,
     },
-    {
-        path: 'ui/popup/compatibility.js',
-        reloadType: reload.UI,
-        platforms: [PLATFORM.CHROMIUM_MV2],
-    },
-    {
-        path: 'plus/assets',
-        reloadType: reload.UI,
-        platforms: [PLATFORM.CHROMIUM_MV2_PLUS],
-    },
 ];
 
 /**

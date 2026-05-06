@@ -1,5 +1,5 @@
 import type {DebugMessageBGtoCS, MessageBGtoCS, MessageCStoBG, MessageCStoUI, MessageUItoCS} from '../definitions';
-import {isSystemDarkModeEnabled, runColorSchemeChangeDetector, stopColorSchemeChangeDetector, emulateColorScheme} from '../utils/media-query';
+import {isSystemDarkModeEnabled, runColorSchemeChangeDetector, stopColorSchemeChangeDetector} from '../utils/media-query';
 import {DebugMessageTypeBGtoCS, MessageTypeBGtoCS, MessageTypeCStoBG, MessageTypeCStoUI, MessageTypeUItoCS} from '../utils/message';
 import {generateUID} from '../utils/uid';
 import {HOMEPAGE_URL} from '../utils/links';
@@ -21,10 +21,7 @@ let unloaded = false;
 
 let darkReaderDynamicThemeStateForTesting: 'loading' | 'ready' = 'loading';
 
-declare const __CHROMIUM_MV2__: boolean;
 declare const __CHROMIUM_MV3__: boolean;
-declare const __THUNDERBIRD__: boolean;
-declare const __FIREFOX_MV2__: boolean;
 
 // Identifier for this particular script instance. It is used as an alternative to chrome.runtime.MessageSender.documentId
 const scriptId = generateUID();
@@ -58,12 +55,8 @@ function sendMessage(message: MessageCStoBG | MessageCStoUI): true | undefined {
     };
 
     try {
-        if (__CHROMIUM_MV3__) {
-            const promise = chrome.runtime.sendMessage<MessageCStoBG | MessageCStoUI, MessageBGtoCS | 'unsupportedSender'>(message);
-            promise.then(responseHandler).catch(cleanup);
-        } else {
-            chrome.runtime.sendMessage<MessageCStoBG | MessageCStoUI, 'unsupportedSender' | undefined>(message, responseHandler);
-        }
+        const promise = chrome.runtime.sendMessage<MessageCStoBG | MessageCStoUI, MessageBGtoCS | 'unsupportedSender'>(message);
+        promise.then(responseHandler).catch(cleanup);
     } catch (error: any) {
         /*
          * We get here if Background context is unreachable which occurs when:
@@ -171,11 +164,9 @@ function sendConnectionOrResumeMessage(type: MessageTypeCStoBG.DOCUMENT_CONNECT 
         {
             type,
             scriptId,
-            data: (__CHROMIUM_MV2__ || __CHROMIUM_MV3__) ? {
+            data: {
                 isDark: isSystemDarkModeEnabled(),
                 isTopFrame: window === window.top,
-            } : {
-                isDark: isSystemDarkModeEnabled(),
             },
         });
 }
@@ -206,13 +197,9 @@ function onDarkThemeDetected() {
     sendMessage({type: MessageTypeCStoBG.DARK_THEME_DETECTED});
 }
 
-// Thunderbird does not have "tabs", and emails aren't 'frozen' or 'cached'.
-// And will currently error: `Promise rejected after context unloaded: Actor 'Conduits' destroyed before query 'RuntimeMessage' was resolved`
-if (!__THUNDERBIRD__) {
-    addEventListener('pagehide', onPageHide, {passive: true});
-    addEventListener('freeze', onFreeze, {passive: true});
-    addEventListener('resume', onResume, {passive: true});
-}
+addEventListener('pagehide', onPageHide, {passive: true});
+addEventListener('freeze', onFreeze, {passive: true});
+addEventListener('resume', onResume, {passive: true});
 
 if (__PLUS__) {
     if (location.origin === HOMEPAGE_URL) {
@@ -271,25 +258,4 @@ if (__TEST__) {
             id: null,
         }));
     };
-
-    if (__FIREFOX_MV2__) {
-        socket.onmessage = (e) => {
-            function respond(data: any) {
-                socket.send(JSON.stringify({id, data}));
-            }
-
-            const {id, data, type} = JSON.parse(e.data);
-            switch (type) {
-                case 'firefox-getColorScheme': {
-                    respond(isSystemDarkModeEnabled() ? 'dark' : 'light');
-                    break;
-                }
-                case 'firefox-emulateColorScheme': {
-                    emulateColorScheme(data);
-                    respond(undefined);
-                    break;
-                }
-            }
-        };
-    }
 }

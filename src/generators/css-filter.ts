@@ -1,5 +1,5 @@
 import type {Theme, InversionFix} from '../definitions';
-import {compareChromeVersions, chromiumVersion, isFirefox, firefoxVersion} from '../utils/platform';
+import {compareChromeVersions, isFirefox, firefoxVersion} from '../utils/platform';
 import {parseArray, formatArray} from '../utils/text';
 import {compareURLPatterns, isURLInList} from '../utils/url';
 
@@ -9,7 +9,6 @@ import {applyColorMatrix, createFilterMatrix} from './utils/matrix';
 import {parseSitesFixesConfig, getSitesFixesFor} from './utils/parse';
 import type {SiteFixesIndex} from './utils/parse';
 
-declare const __CHROMIUM_MV2__: boolean;
 declare const __CHROMIUM_MV3__: boolean;
 
 export enum FilterMode {
@@ -25,10 +24,7 @@ export enum FilterMode {
  * Patch: https://chromium-review.googlesource.com/c/chromium/src/+/1979258
  */
 export function hasPatchForChromiumIssue501582(): boolean {
-    return __CHROMIUM_MV3__ || Boolean(
-        __CHROMIUM_MV2__ &&
-        compareChromeVersions(chromiumVersion, '81.0.4035.0') >= 0
-    );
+    return __CHROMIUM_MV3__;
 }
 
 /**

@@ -20,11 +20,11 @@ function html(platform, title, hasLoader, hasStyleSheet, compatibility) {
             '        <link rel="stylesheet" type="text/css" href="style.css" />',
             '        <link',
             '            rel="shortcut icon"',
-            '            href="../assets/images/darkreader-icon-256x256.png"',
+            '            href="../assets/images/darkman-favicon.svg"',
             '        />',
         ] : null,
         '        <script src="index.js" defer></script>',
-        (compatibility && platform === PLATFORM.CHROMIUM_MV2) ? '        <script src="compatibility.js" defer></script>' : null,
+        null,
         '    </head>',
         '',
         hasLoader ? [
@@ -44,16 +44,16 @@ function html(platform, title, hasLoader, hasStyleSheet, compatibility) {
 /** @type {HTMLEntry[]} */
 const htmlEntries = [
     {
-        title: 'Dark Reader background',
+        title: 'DarkMan background',
         path: 'background/index.html',
         hasLoader: false,
         hasStyleSheet: false,
         hasCompatibilityCheck: false,
         reloadType: reload.FULL,
-        platforms: [PLATFORM.CHROMIUM_MV2, PLATFORM.CHROMIUM_MV2_PLUS, PLATFORM.FIREFOX_MV2, PLATFORM.THUNDERBIRD],
+        platforms: [],
     },
     {
-        title: 'Dark Reader settings',
+        title: 'DarkMan settings',
         path: 'ui/popup/index.html',
         hasLoader: true,
         hasStyleSheet: true,
@@ -61,7 +61,7 @@ const htmlEntries = [
         reloadType: reload.UI,
     },
     {
-        title: 'Dark Reader settings',
+        title: 'DarkMan settings',
         path: 'ui/options/index.html',
         hasLoader: false,
         hasStyleSheet: true,
@@ -69,7 +69,7 @@ const htmlEntries = [
         reloadType: reload.UI,
     },
     {
-        title: 'Dark Reader developer tools',
+        title: 'DarkMan developer tools',
         path: 'ui/devtools/index.html',
         hasLoader: false,
         hasStyleSheet: true,
@@ -77,7 +77,7 @@ const htmlEntries = [
         reloadType: reload.UI,
     },
     {
-        title: 'Dark Reader CSS editor',
+        title: 'DarkMan CSS editor',
         path: 'ui/stylesheet-editor/index.html',
         hasLoader: false,
         hasStyleSheet: true,

@@ -100,21 +100,11 @@ async function run({release, debug, platforms, watch, log, test, version}) {
 function getParams(args) {
     const argMap = {
         '--api': PLATFORM.API,
-        '--chrome': PLATFORM.CHROMIUM_MV2,
-        '--chrome-mv2': PLATFORM.CHROMIUM_MV2,
         '--chrome-mv3': PLATFORM.CHROMIUM_MV3,
-        '--chrome-plus': PLATFORM.CHROMIUM_MV2_PLUS,
-        '--firefox': PLATFORM.FIREFOX_MV2,
-        '--firefox-mv2': PLATFORM.FIREFOX_MV2,
         '--firefox-mv3': PLATFORM.FIREFOX_MV3,
-        '--thunderbird': PLATFORM.THUNDERBIRD,
     };
     const platforms = {
-        [PLATFORM.CHROMIUM_MV2]: false,
-        [PLATFORM.CHROMIUM_MV2_PLUS]: false,
         [PLATFORM.CHROMIUM_MV3]: false,
-        [PLATFORM.FIREFOX_MV2]: false,
-        [PLATFORM.THUNDERBIRD]: false,
     };
     let allPlatforms = true;
     for (const arg of args) {
@@ -123,22 +113,9 @@ function getParams(args) {
             allPlatforms = false;
         }
     }
-    if ((args.includes('--chrome') || args.includes('--chrome-mv2')) && args.includes('--plus')) {
-        platforms[PLATFORM.CHROMIUM_MV2] = false;
-        platforms[PLATFORM.CHROMIUM_MV2_PLUS] = true;
-    }
     if (allPlatforms) {
-        Object.keys(platforms).forEach((platform) => platforms[platform] = true);
-    }
-
-    // TODO(Anton): remove me
-    if (platforms[PLATFORM.FIREFOX_MV3]) {
-        platforms[PLATFORM.FIREFOX_MV3] = false;
-        console.log('Firefox MV3 build is not supported yet');
-    }
-
-    if (!pathExistsSync('./src/plus/')) {
-        platforms[PLATFORM.CHROMIUM_MV2_PLUS] = false;
+        platforms[PLATFORM.CHROMIUM_MV3] = true;
+        platforms[PLATFORM.FIREFOX_MV3] = true;
     }
 
     const versionArg = args.find((a) => a.startsWith('--version='));

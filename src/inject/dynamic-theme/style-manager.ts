@@ -595,9 +595,19 @@ async function loadText(url: string) {
     const parsedURL = new URL(url);
     let text: string;
     if (parsedURL.origin === location.origin) {
-        text = await loadAsText(url, 'text/css', location.origin);
+        try {
+            text = await loadAsText(url, 'text/css', location.origin);
+        } catch (e) {
+            logWarn(`Failed to load local CSS: ${url}`, e);
+            text = '';
+        }
     } else {
-        text = await bgFetch({url, responseType: 'text', mimeType: 'text/css', origin: location.origin});
+        try {
+            text = await bgFetch({url, responseType: 'text', mimeType: 'text/css', origin: location.origin});
+        } catch (e) {
+            logWarn(`Failed to fetch cross-origin CSS: ${url}`, e);
+            text = '';
+        }
     }
     if (parsedURL.origin === location.origin) {
         writeCSSFetchCache(url, text);

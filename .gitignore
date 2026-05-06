@@ -44,3 +44,12 @@ deno.json
 # System files
 #-----------------------------------
 .DS_Store
+
+# AI tool configs
+#-----------------------------------
+.gemini/
+.copilot/
+GEMINI.md
+
+#-----------------------------------
+src/icons-backup/

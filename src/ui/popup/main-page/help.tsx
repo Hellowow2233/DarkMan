@@ -8,7 +8,7 @@ export default function HelpGroup() {
     return (
         <ControlGroup>
             <ControlGroup.Control>
-                <a class="m-help-button" href={`${HELP_URL}/v5/`} target="_blank" rel="noopener noreferrer">
+                <a class="m-help-button" href={HELP_URL} target="_blank" rel="noopener noreferrer">
                     <span class="m-help-button__text">
                         {getLocalMessage('help')}
                     </span>

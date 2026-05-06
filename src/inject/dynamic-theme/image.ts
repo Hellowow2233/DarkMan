@@ -89,7 +89,12 @@ async function getDataURL(url: string): Promise<string> {
     if (parsedURL.origin === location.origin) {
         return await loadAsDataURL(url);
     }
-    return await bgFetch({url, responseType: 'data-url', origin: location.origin});
+    try {
+        return await bgFetch({url, responseType: 'data-url', origin: location.origin});
+    } catch (e) {
+        logWarn(`Failed to fetch cross-origin image: ${url}`, e);
+        return '';
+    }
 }
 
 async function tryCreateImageBitmap(blob: Blob) {

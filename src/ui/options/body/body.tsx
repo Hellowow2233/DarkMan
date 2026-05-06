@@ -30,7 +30,7 @@ export default function Body(props: BodyProps): Malevic.Child {
     return (
         <body>
             <header>
-                <img id="logo" src="../assets/images/darkreader-type.svg" alt="Dark Reader" />
+                <span id="logo" style={{color: '#E96C4C', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center'}}>DARKMAN</span>
                 <h1 id="title">Settings</h1>
             </header>
             <TabPanel activeTabId={store.activeTabId} onTabChange={onSettingsTabChange}>

@@ -2,7 +2,6 @@ import {m} from 'malevic';
 import {getContext} from 'malevic/dom';
 
 import type {ViewProps} from '../../../definitions';
-import {DONATE_URL} from '../../../utils/links';
 // import {getLocalMessage} from '../../../utils/locales';
 import {Button, ControlGroup, TextBox} from '../../controls';
 
@@ -74,9 +73,9 @@ export function ActivationTab(props: ViewProps): Malevic.Child {
     >
         <ControlGroup>
             <ControlGroup.Control class="activation__get-code-control">
-                <a href={DONATE_URL} target="_blank" rel="noopener noreferrer">
-                    Get activation code
-                </a>
+                <div>
+                    Get activation code from darkreader.org/plus/
+                </div>
             </ControlGroup.Control>
         </ControlGroup>
         <ControlGroup>
