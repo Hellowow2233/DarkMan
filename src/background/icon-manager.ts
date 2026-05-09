@@ -65,7 +65,7 @@ export default class IconManager {
     }
 
     static setIcon({isActive = this.iconState.active, colorScheme = 'dark', tabId}: IconOptions): void {
-        if (!chrome.browserAction.setIcon) {
+        if (!chrome.action.setIcon) {
             // Fix for Firefox Android.
             return;
         }
@@ -93,26 +93,26 @@ export default class IconManager {
         // Temporary disable per-site icons
         /*
         if (tabId) {
-            chrome.browserAction.setIcon({tabId, path});
+            chrome.action.setIcon({tabId, path});
         } else {
-            chrome.browserAction.setIcon({path});
+            chrome.action.setIcon({path});
             IconManager.handleUpdate();
         }
         */
-        chrome.browserAction.setIcon({path});
+        chrome.action.setIcon({path});
         IconManager.handleUpdate();
     }
 
     static showBadge(text: string): void {
         IconManager.iconState.badgeText = text;
-        chrome.browserAction.setBadgeBackgroundColor({color: '#e96c4c'});
-        chrome.browserAction.setBadgeText({text});
+        chrome.action.setBadgeBackgroundColor({color: '#e96c4c'});
+        chrome.action.setBadgeText({text});
         IconManager.handleUpdate();
     }
 
     static hideBadge(): void {
         IconManager.iconState.badgeText = '';
-        chrome.browserAction.setBadgeText({text: ''});
+        chrome.action.setBadgeText({text: ''});
         IconManager.handleUpdate();
     }
 }

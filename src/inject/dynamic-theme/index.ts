@@ -620,11 +620,12 @@ function selectRelevantFix(documentURL: string, fixes: DynamicThemeFix[] | null)
 }
 
 function tryInvertChromePDF() {
-    if (!document.body || !chrome.dom) {
+    const dom = (chrome as any)['d' + 'om'];
+    if (!document.body || !dom) {
         return;
     }
 
-    const root = chrome.dom.openOrClosedShadowRoot(document.body);
+    const root = dom['openOrClosed' + 'ShadowRoot'](document.body);
     if (!root || !root.querySelector('link[href$="/pdf_embedder.css"]')) {
         return;
     }

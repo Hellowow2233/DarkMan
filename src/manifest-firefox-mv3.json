@@ -61,8 +61,16 @@
     ],
     "browser_specific_settings": {
         "gecko": {
-            "id": "addon@darkreader.org",
-            "strict_min_version": "109.0"
+            "id": "{95c79fe0-b996-43d3-8b5c-71af7c0818a5}",
+            "strict_min_version": "140.0",
+            "data_collection_permissions": {
+                "required": [
+                    "none"
+                ]
+            }
+        },
+        "gecko_android": {
+            "strict_min_version": "142.0"
         }
     }
 }

@@ -34,13 +34,13 @@ const jsEntries = [
         src: 'src/inject/dynamic-theme/mv3-proxy.ts',
         dest: 'inject/proxy.js',
         reloadType: reload.FULL,
-        platform: PLATFORM.CHROMIUM_MV3,
+        platforms: [PLATFORM.CHROMIUM_MV3, PLATFORM.FIREFOX_MV3],
     },
     {
         src: 'src/inject/color-scheme-watcher.ts',
         dest: 'inject/color-scheme-watcher.js',
         reloadType: reload.FULL,
-        platform: PLATFORM.CHROMIUM_MV3,
+        platforms: [PLATFORM.CHROMIUM_MV3, PLATFORM.FIREFOX_MV3],
     },
     {
         src: 'src/ui/devtools/index.tsx',
@@ -73,6 +73,7 @@ async function bundleJS(/** @type {JSEntry} */entry, platform, debug, watch, log
     let replace = {};
     switch (platform) {
         case PLATFORM.CHROMIUM_MV3:
+        case PLATFORM.FIREFOX_MV3:
             replace = {
                 'chrome.browserAction.setIcon': 'chrome.action.setIcon',
                 'chrome.browserAction.setBadgeBackgroundColor': 'chrome.action.setBadgeBackgroundColor',

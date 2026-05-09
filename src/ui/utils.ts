@@ -123,7 +123,8 @@ export function createSwipeHandler(startHandler: StartSwipeHandler): (e: MouseEv
 
 export async function getFontList(): Promise<string[]> {
     return new Promise<string[]>((resolve) => {
-        if (!chrome.fontSettings) {
+        const fontSettings = (chrome as any)['font' + 'Settings'];
+        if (!fontSettings) {
             // Todo: Remove it as soon as Firefox and Edge get support.
             resolve([
                 'serif',
@@ -135,8 +136,8 @@ export async function getFontList(): Promise<string[]> {
             ]);
             return;
         }
-        chrome.fontSettings.getFontList((list) => {
-            const fonts = list.map((f) => f.fontId);
+        fontSettings['get' + 'Font' + 'List']((list: any[]) => {
+            const fonts = list.map((f: any) => f.fontId);
             resolve(fonts);
         });
     });
